@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <x-header :title="title" ref='header'></x-header>
+    <x-header :title="title" ref='header' :left-options="{showBack}"></x-header>
     <router-view :heightData='heightData'></router-view>
     <tabbar @on-index-change='changeText' v-model="index" ref='tabbar'>
       <tabbar-item link="/in_theaters">
@@ -28,6 +28,8 @@ export default {
     document.documentElement.style.fontSize = `${window.innerWidth / 25}px`;
 
     this.setTabbarIndex();
+    if (this.routesArr.some(elem => elem === this.$route.path)) this.showBack = false;
+    else this.showBack = true;
   },
   mounted() {
     this.heightData = `${document.body.offsetHeight - this.$refs.header.$el.offsetHeight - this.$refs.tabbar.$el.offsetHeight}px`;
@@ -45,7 +47,9 @@ export default {
       title: '',
       index: 0,
       routeViewHeight: '',
-      heightData: ''
+      heightData: '',
+      showBack: false,
+      routesArr: ['/in_theaters', '/coming_soon', '/top250', '/us_box']
     }
   },
   methods: {
@@ -55,8 +59,7 @@ export default {
     },
     // 根据route设置相应选中项
     setTabbarIndex() {
-      var routesArr = ['/in_theaters', '/coming_soon', '/top250', '/us_box'];
-      routesArr.forEach((item, index) => {
+      this.routesArr.forEach((item, index) => {
         if (item === this.$route.path) {
           this.index = index;
         }
@@ -64,8 +67,10 @@ export default {
     }
   },
   watch: {
-    $route() {
+    $route(newval) {
       this.setTabbarIndex();
+      if (this.routesArr.some(elem => elem === newval.path)) this.showBack = false;
+      else this.showBack = true;
     }
   }
 }
@@ -82,7 +87,7 @@ body,
   height: 100%;
 }
 
-.router-view{
+.router-view {
   overflow: hidden;
 }
 </style>

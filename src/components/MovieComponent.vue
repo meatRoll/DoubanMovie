@@ -1,9 +1,9 @@
 <template>
 	<div>
-		<scroller lock-x :height='heightData' @on-scroll-bottom="onScrollBottom" :scroll-bottom-offst="200">
+		<scroller lock-x :height='heightData' @on-scroll-bottom="onScrollBottom" ref="scrollerEvent" :scroll-bottom-offst="200">
 			<div class="box">
 				<panel :list="dataList" type="1" @on-img-error="onImgError" class="movieList"></panel>
-				<load-more tip="loading"></load-more>
+				<load-more tip="loading" v-if="isLoadMoreShow"></load-more>
 			</div>
 		</scroller>
 	</div>
@@ -23,7 +23,9 @@ export default {
 			bottomCount: 20,
 			dataList: [],
 			start: 0,
-			total: Infinity
+			total: Infinity,
+			canGetData: true,
+			isLoadMoreShow: true
 		}
 	},
 	components: {
@@ -37,8 +39,10 @@ export default {
 		// 获取渲染数据
 		getData() {
 			jsonp(`${this.$route.path}?start=${this.start}&count=10`).then(res => {
-				if(this.total === Infinity) this.total = res.total;
+				this.canGetData = true;
+				if (this.total === Infinity) this.total = res.total;
 				this.start += 10;
+				// 设置数据格式
 				res.subjects.forEach(function(elem) {
 					elem.title = `${elem.title} (${elem.year})`;
 					elem.src = elem.images.small;
@@ -56,14 +60,24 @@ export default {
 					elem.url = `/moviedetail/${elem.id}`
 				}, this);
 				this.dataList = this.dataList.concat(res.subjects);
+			}).catch(ex => {
+				this.canGetData = true;
+				console.error(ex);
 			});
 		},
 		// 滑动底部
 		onScrollBottom() {
-			// 停止加载
-			if(this.start > this.total) return;
+			if (this.canGetData) {
+				this.canGetData = false;
+				// 停止加载
+				if (this.start > this.total) {
+					this.isLoadMoreShow = false;
+					return;
+				};
 
-
+				//发送请求加载数据
+				this.getData();
+			}
 		},
 		// 图像错误
 		onImgError(item, $event) {
@@ -72,8 +86,15 @@ export default {
 	},
 	watch: {
 		$route() {
-			// this.dataList = 
+			this.dataList = [];
+			this.start = 0;
+			this.total = Infinity;
+			this.isLoadMoreShow = true;
 			this.getData();
+			// 重置scroller
+			this.$nextTick(() => {
+				this.$refs.scrollerEvent.reset({ top: 0 })
+			})
 		}
 	},
 	props: ['heightData']
