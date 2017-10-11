@@ -1,19 +1,88 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <x-header :title="title" ref='header'></x-header>
+    <router-view :heightData='heightData'></router-view>
+    <tabbar @on-index-change='changeText' v-model="index" ref='tabbar'>
+      <tabbar-item link="/in_theaters">
+        <span slot="label" ref='tabbarItem0'>正在热映</span>
+      </tabbar-item>
+      <tabbar-item link="/coming_soon">
+        <span slot="label" ref='tabbarItem1'>即将上映</span>
+      </tabbar-item>
+      <tabbar-item link="/top250">
+        <span slot="label" ref='tabbarItem2'>Top250</span>
+      </tabbar-item>
+      <tabbar-item link="/us_box">
+        <span slot="label" ref='tabbarItem3'>北美票房榜</span>
+      </tabbar-item>
+    </tabbar>
   </div>
 </template>
 
 <script>
+import { XHeader, TransferDom, Tabbar, TabbarItem } from 'vux';
+
 export default {
-  name: 'app'
+  created() {
+    // 设置html字体大小
+    document.documentElement.style.fontSize = `${window.innerWidth / 25}px`;
+
+    this.setTabbarIndex();
+  },
+  mounted() {
+    this.heightData = `${document.body.offsetHeight - this.$refs.header.$el.offsetHeight - this.$refs.tabbar.$el.offsetHeight}px`;
+  },
+  directives: {
+    TransferDom
+  },
+  components: {
+    XHeader,
+    Tabbar,
+    TabbarItem
+  },
+  data() {
+    return {
+      title: '',
+      index: 0,
+      routeViewHeight: '',
+      heightData: ''
+    }
+  },
+  methods: {
+    // 设置title
+    changeText(index) {
+      this.title = this.$refs[`tabbarItem${index}`].innerText;
+    },
+    // 根据route设置相应选中项
+    setTabbarIndex() {
+      var routesArr = ['/in_theaters', '/coming_soon', '/top250', '/us_box'];
+      routesArr.forEach((item, index) => {
+        if (item === this.$route.path) {
+          this.index = index;
+        }
+      }, this);
+    }
+  },
+  watch: {
+    $route() {
+      this.setTabbarIndex();
+    }
+  }
 }
 </script>
 
 <style lang="less">
 @import '~vux/src/styles/reset.less';
+@import './assets/css/common.less';
 
-body {
-  background-color: #fbf9fe;
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+.router-view{
+  overflow: hidden;
 }
 </style>
