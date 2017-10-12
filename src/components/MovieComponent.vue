@@ -93,7 +93,6 @@ export default {
 			this.start = 0;
 			this.total = Infinity;
 			this.isLoadMoreShow = true;
-			this.getData();
 			// 重置scroller
 			this.$nextTick(() => {
 				this.$refs.scrollerEvent.reset({ top: 0 })

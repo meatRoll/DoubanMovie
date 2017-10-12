@@ -49,7 +49,6 @@ export default {
     this.setTabbarIndex();
     if (this.routesArr.some(elem => elem === this.$route.path)) this.showBack = false;
     else this.showBack = true;
-    console.log(this)
   },
   mounted() {
     this.heightData = `${document.body.offsetHeight - this.$refs.header.$el.offsetHeight - this.$refs.tabbar.$el.offsetHeight}px`;
@@ -75,7 +74,7 @@ export default {
       routeViewHeight: '',
       heightData: '',
       showBack: false,
-      routesArr: ['/in_theaters', '/coming_soon', '/top250', '/us_box', '/search'],
+      routesArr: ['/in_theaters', '/coming_soon', '/top250', '/us_box', '/search', '/moviedetail'],
       showModeValue: 'push',
       showPlacementValue: 'left',
       both,
@@ -87,13 +86,14 @@ export default {
   methods: {
     // 设置title
     changeText(index) {
-      if(index >=0 && index <=3) this.title = this.$refs[`tabbarItem${index}`].innerText;
-      else if(index === 4) this.title = '电影搜索结果';
+      if (index >= 0 && index <= 3) this.title = this.$refs[`tabbarItem${index}`].innerText;
+      else if (index === 4) this.title = '电影搜索结果';
+      else if (index === 5) this.title = '电影详情';
     },
     // 根据route设置相应选中项
     setTabbarIndex() {
       this.routesArr.forEach((item, index) => {
-        if (item === this.$route.path) {
+        if (new RegExp(item).test(this.$route.path)) {
           this.index = index;
         }
       }, this);
@@ -111,12 +111,12 @@ export default {
       if (this.movienameVal.trim() === '' && this.movietypeVal.trim() === '') {
         console.log(1)
       } else {
-        this.$router.push({ path: '/search', query: { q: this.movienameVal, tag: this.movietypeVal }});
+        this.$router.push({ path: '/search', query: { q: this.movienameVal, tag: this.movietypeVal } });
         this.$store.commit('changeIsSearch');
       }
     },
-    // 
-    changeDrawerVisibility(){
+    // 改变Drawer状态
+    changeDrawerVisibility() {
       this.drawerVisibility = !this.drawerVisibility;
     }
   },
