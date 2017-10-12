@@ -4,6 +4,7 @@ Vue.use(Router)
 
 import MovieComponent from '../components/MovieComponent.vue';
 import US_box from '../components/US_box.vue';
+import MovieDetail from '../components/MovieDetail.vue';
 
 export default new Router({
   routes: [{
@@ -17,6 +18,10 @@ export default new Router({
     {
       path: '/:type',
       component: MovieComponent
+    },
+    {
+      path: '/moviedetail/:id',
+      component: MovieDetail
     }
   ]
 })

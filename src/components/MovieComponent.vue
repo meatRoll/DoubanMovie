@@ -2,7 +2,7 @@
 	<div>
 		<scroller lock-x :height='heightData' @on-scroll-bottom="onScrollBottom" ref="scrollerEvent" :scroll-bottom-offst="200">
 			<div class="box">
-				<panel :list="dataList" type="1" @on-img-error="onImgError" class="movieList"></panel>
+				<panel :list="dataList" type="5" @on-img-error="onImgError" class="movieList"></panel>
 				<load-more tip="loading" v-if="isLoadMoreShow"></load-more>
 			</div>
 		</scroller>
@@ -11,7 +11,7 @@
 
 <script>
 import { jsonp } from '../assets/js/common.js';
-import { Scroller, Divider, Spinner, LoadMore, Panel } from 'vux'
+import { Scroller, Spinner, LoadMore, Panel } from 'vux'
 
 export default {
 	created() {
@@ -30,7 +30,6 @@ export default {
 	},
 	components: {
 		Scroller,
-		Divider,
 		Spinner,
 		LoadMore,
 		Panel
@@ -65,7 +64,7 @@ export default {
 				console.error(ex);
 			});
 		},
-		// 滑动底部
+		// 滑到底部
 		onScrollBottom() {
 			if (this.canGetData) {
 				this.canGetData = false;
@@ -100,11 +99,3 @@ export default {
 	props: ['heightData']
 }
 </script>
-
-<style scoped lang="less">
-@import '../assets/css/common.less';
-
-.box2-wrap {
-	overflow: hidden;
-}
-</style>

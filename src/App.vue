@@ -1,26 +1,45 @@
 <template>
   <div id="app">
-    <x-header :title="title" ref='header' :left-options="{showBack}"></x-header>
-    <router-view :heightData='heightData'></router-view>
-    <tabbar @on-index-change='changeText' v-model="index" ref='tabbar'>
-      <tabbar-item link="/in_theaters">
-        <span slot="label" ref='tabbarItem0'>正在热映</span>
-      </tabbar-item>
-      <tabbar-item link="/coming_soon">
-        <span slot="label" ref='tabbarItem1'>即将上映</span>
-      </tabbar-item>
-      <tabbar-item link="/top250">
-        <span slot="label" ref='tabbarItem2'>Top250</span>
-      </tabbar-item>
-      <tabbar-item link="/us_box">
-        <span slot="label" ref='tabbarItem3'>北美票房榜</span>
-      </tabbar-item>
-    </tabbar>
+    <drawer width="16.67rem" :show.sync="drawerVisibility" :show-mode="showModeValue" :placement="showPlacementValue" :drawer-style="{'background-color':'#35495e', width: `${250 / 15}rem`}">
+      <div slot="drawer" class="drawer">
+        <group label-align="left" class="drawer-group">
+          <group-title slot="title" class="drawer-movie-search">电影搜索</group-title>
+          <x-input title="电影名称" placeholder="请输入电影名称" v-model="movienameVal" ref="moviename"></x-input>
+          <x-input title="电影类型" placeholder="请输入电影类型" v-model="movietypeVal"></x-input>
+          <x-button class="drawer-movie-search-btn" @click.native="submit">点击搜索</x-button>
+        </group>
+        <group class="drawer-group drawer-group-img">
+          <img :src="both" alt="">
+        </group>
+      </div>
+
+      <!-- main content -->
+      <x-header :title="title" ref='header' :left-options="{showBack}">
+        <x-icon slot="overwrite-left" type="ios-search-strong" size="30" class="overwrite-left" @click="showDrawer" v-if="!showBack"></x-icon>
+      </x-header>
+      <router-view :heightData='heightData'></router-view>
+      <tabbar @on-index-change='changeText' v-model="index" ref='tabbar'>
+        <tabbar-item link="/in_theaters">
+          <span slot="label" ref='tabbarItem0'>正在热映</span>
+        </tabbar-item>
+        <tabbar-item link="/coming_soon">
+          <span slot="label" ref='tabbarItem1'>即将上映</span>
+        </tabbar-item>
+        <tabbar-item link="/top250">
+          <span slot="label" ref='tabbarItem2'>Top250</span>
+        </tabbar-item>
+        <tabbar-item link="/us_box">
+          <span slot="label" ref='tabbarItem3'>北美票房榜</span>
+        </tabbar-item>
+      </tabbar>
+    </drawer>
   </div>
 </template>
 
 <script>
-import { XHeader, TransferDom, Tabbar, TabbarItem } from 'vux';
+import { XHeader, TransferDom, Tabbar, TabbarItem, Drawer, Group, GroupTitle, XInput, XButton, XImg } from 'vux';
+import both from './assets/both.jpeg';
+
 
 export default {
   created() {
@@ -40,7 +59,13 @@ export default {
   components: {
     XHeader,
     Tabbar,
-    TabbarItem
+    TabbarItem,
+    Drawer,
+    Group,
+    GroupTitle,
+    XInput,
+    XButton,
+    XImg
   },
   data() {
     return {
@@ -49,7 +74,13 @@ export default {
       routeViewHeight: '',
       heightData: '',
       showBack: false,
-      routesArr: ['/in_theaters', '/coming_soon', '/top250', '/us_box']
+      routesArr: ['/in_theaters', '/coming_soon', '/top250', '/us_box'],
+      drawerVisibility: false,
+      showModeValue: 'push',
+      showPlacementValue: 'left',
+      both,
+      movienameVal: '',
+      movietypeVal: ''
     }
   },
   methods: {
@@ -64,13 +95,33 @@ export default {
           this.index = index;
         }
       }, this);
+    },
+    // 显示Drawer
+    showDrawer() {
+      this.drawerVisibility = true;
+      // 获得焦点
+      setTimeout(() => {
+        this.$refs.moviename.focus();
+      }, 250);
+    },
+    // 提交
+    submit(){
+
     }
   },
   watch: {
+    // Xheader左边图标的切换
     $route(newval) {
       this.setTabbarIndex();
       if (this.routesArr.some(elem => elem === newval.path)) this.showBack = false;
       else this.showBack = true;
+    },
+    // 隐藏Drawer时清空输入框
+    drawerVisibility(newval){
+      if(newval === false) {
+        this.movienameVal = '';
+        this.movietypeVal = '';
+      }
     }
   }
 }
@@ -89,5 +140,38 @@ body,
 
 .router-view {
   overflow: hidden;
+}
+
+.overwrite-left {
+  fill: #fff;
+  position: relative;
+  top: -8rem / @param;
+  left: -3rem / @param;
+}
+
+.weui-cells__title.drawer-movie-search {
+  font-size: 22px;
+  margin: 30px 0;
+}
+
+.vux-drawer-content .weui-cells {
+  margin: 0 5rem / @param;
+  border-radius: 2rem / @param;
+}
+
+.drawer-movie-search-btn{
+  margin-top: 10px;
+}
+
+.drawer-group-img{
+  border-radius: 50%;
+  overflow: hidden;
+  position: absolute;
+  bottom: 20px;
+}
+
+.drawer-group-img img{
+  display: block;
+  width: 100%;
 }
 </style>
