@@ -37,7 +37,11 @@ export default {
 	methods: {
 		// 获取渲染数据
 		getData() {
-			jsonp(`${this.$route.path}?start=${this.start}&count=10`).then(res => {
+			jsonp(`${this.$route.path}?start=${this.start}&count=10&q=${this.$route.query.q}&tag=${this.$route.query.tag}`).then(res => {
+				if (this.$store.state.isSearch) {
+					this.$store.commit('changeIsSearch');
+					this.$emit('drawerVisibilityChange');
+				};
 				this.canGetData = true;
 				if (this.total === Infinity) this.total = res.total;
 				this.start += 10;

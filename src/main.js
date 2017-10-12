@@ -5,6 +5,20 @@ import FastClick from 'fastclick';
 import App from './App';
 import router from './routers/routers.js';
 
+import Vuex from 'vuex';
+Vue.use(Vuex);
+
+const store = new Vuex.Store({
+  state: {
+    isSearch: false
+  },
+  mutations: {
+    changeIsSearch (state) {
+      state.isSearch = !state.isSearch;
+    }
+  }
+})
+
 FastClick.attach(document.body)
 
 Vue.config.productionTip = false
@@ -12,5 +26,6 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   router,
-  render: h => h(App)
+  render: h => h(App),
+  store
 }).$mount('#app-box')

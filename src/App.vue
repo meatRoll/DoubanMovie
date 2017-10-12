@@ -6,7 +6,7 @@
           <group-title slot="title" class="drawer-movie-search">电影搜索</group-title>
           <x-input title="电影名称" placeholder="请输入电影名称" v-model="movienameVal" ref="moviename"></x-input>
           <x-input title="电影类型" placeholder="请输入电影类型" v-model="movietypeVal"></x-input>
-          <x-button class="drawer-movie-search-btn" @click.native="submit">点击搜索</x-button>
+          <x-button class="drawer-movie-search-btn" @click.native="submit" :show-loading="$store.state.isSearch">点击搜索</x-button>
         </group>
         <group class="drawer-group drawer-group-img">
           <img :src="both" alt="">
@@ -17,7 +17,7 @@
       <x-header :title="title" ref='header' :left-options="{showBack}">
         <x-icon slot="overwrite-left" type="ios-search-strong" size="30" class="overwrite-left" @click="showDrawer" v-if="!showBack"></x-icon>
       </x-header>
-      <router-view :heightData='heightData'></router-view>
+      <router-view :heightData='heightData' @drawerVisibilityChange='changeDrawerVisibility'></router-view>
       <tabbar @on-index-change='changeText' v-model="index" ref='tabbar'>
         <tabbar-item link="/in_theaters">
           <span slot="label" ref='tabbarItem0'>正在热映</span>
@@ -49,6 +49,7 @@ export default {
     this.setTabbarIndex();
     if (this.routesArr.some(elem => elem === this.$route.path)) this.showBack = false;
     else this.showBack = true;
+    console.log(this)
   },
   mounted() {
     this.heightData = `${document.body.offsetHeight - this.$refs.header.$el.offsetHeight - this.$refs.tabbar.$el.offsetHeight}px`;
@@ -74,19 +75,20 @@ export default {
       routeViewHeight: '',
       heightData: '',
       showBack: false,
-      routesArr: ['/in_theaters', '/coming_soon', '/top250', '/us_box'],
-      drawerVisibility: false,
+      routesArr: ['/in_theaters', '/coming_soon', '/top250', '/us_box', '/search'],
       showModeValue: 'push',
       showPlacementValue: 'left',
       both,
       movienameVal: '',
-      movietypeVal: ''
+      movietypeVal: '',
+      drawerVisibility: false
     }
   },
   methods: {
     // 设置title
     changeText(index) {
-      this.title = this.$refs[`tabbarItem${index}`].innerText;
+      if(index >=0 && index <=3) this.title = this.$refs[`tabbarItem${index}`].innerText;
+      else if(index === 4) this.title = '电影搜索结果';
     },
     // 根据route设置相应选中项
     setTabbarIndex() {
@@ -105,8 +107,17 @@ export default {
       }, 250);
     },
     // 提交
-    submit(){
-
+    submit() {
+      if (this.movienameVal.trim() === '' && this.movietypeVal.trim() === '') {
+        console.log(1)
+      } else {
+        this.$router.push({ path: '/search', query: { q: this.movienameVal, tag: this.movietypeVal }});
+        this.$store.commit('changeIsSearch');
+      }
+    },
+    // 
+    changeDrawerVisibility(){
+      this.drawerVisibility = !this.drawerVisibility;
     }
   },
   watch: {
@@ -117,8 +128,8 @@ export default {
       else this.showBack = true;
     },
     // 隐藏Drawer时清空输入框
-    drawerVisibility(newval){
-      if(newval === false) {
+    drawerVisibility(newval) {
+      if (newval === false) {
         this.movienameVal = '';
         this.movietypeVal = '';
       }
@@ -159,18 +170,18 @@ body,
   border-radius: 2rem / @param;
 }
 
-.drawer-movie-search-btn{
+.drawer-movie-search-btn {
   margin-top: 10px;
 }
 
-.drawer-group-img{
+.drawer-group-img {
   border-radius: 50%;
   overflow: hidden;
   position: absolute;
   bottom: 20px;
 }
 
-.drawer-group-img img{
+.drawer-group-img img {
   display: block;
   width: 100%;
 }
