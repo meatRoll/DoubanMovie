@@ -2,18 +2,26 @@
 	<div>
 		<card class="movie-detail">
 			<div slot="header">
-				<h2>电影名：{{dataList.title}}</h2>
-				<h4 class="anotherName">又名：{{dataList.anotherName}}</h4>
+				<h2>电影名：{{dataList.title}} ({{dataList.year}})</h2>
+				<h4 class="head-style">原名：{{dataList.original_title}}</h4>
+				<h4 class="head-style">又名：{{dataList.anotherName}}</h4>
+				<p class="head-style">国家：{{dataList.countries}}</p>
+				<p class="head-style">类型：{{dataList.genres}}</p>
 			</div>
 			<div slot="content" class="content">
-				<div class="left">
-					<img class="previewer-demo-img" :src="dataList.images && dataList.images.medium" @click="show()">
+				<div class="up">
+					<h3>内容介绍</h3>
 				</div>
-				<div class="right">
-					<p>年份：{{dataList.year}}</p>
-				</div>
-				<div v-transfer-dom>
-					<previewer :list="previewerList" ref="previewer" :options="options"></previewer>
+				<div class="down">
+					<div class="left">
+						<img class="previewer-demo-img" :src="dataList.images && dataList.images.medium" @click="show()">
+					</div>
+					<div class="right">
+						详情：{{dataList.summary}}
+					</div>
+					<div v-transfer-dom>
+						<previewer :list="previewerList" ref="previewer" :options="options"></previewer>
+					</div>
 				</div>
 			</div>
 			<div slot="footer" class="footer">
@@ -25,7 +33,7 @@
 
 <script>
 import { jsonp } from '../assets/js/common.js';
-import { Card, Previewer, TransferDom } from 'vux';
+import { Card, Previewer, TransferDom, CellBox } from 'vux';
 
 export default {
 	created() {
@@ -37,7 +45,9 @@ export default {
 				src: res.images.large
 			}];
 			this.dataList = res;
-			this.dataList.anotherName = this.dataList.aka.join('、');
+			this.dataList.anotherName = res.aka.join('、');
+			this.dataList.countries = res.countries.join('、');
+			this.dataList.genres = res.genres.join('、');
 		}).catch(ex => {
 			console.error(ex);
 		});
@@ -70,7 +80,8 @@ export default {
 	},
 	components: {
 		Card,
-		Previewer
+		Previewer,
+		CellBox
 	},
 	directives: {
 		TransferDom
@@ -83,21 +94,32 @@ export default {
 
 .movie-detail {
 	padding: 10rem /@param;
-	.content, .footer{
+	.content,
+	.footer {
 		margin-top: 10rem / @param;
 	}
 	.content {
-		display: flex;
-		.left{
-			padding-right: 10rem / @param;
+		.up{
+			padding-bottom: 8px;
+			border-top: 1px solid @lineColor;
 		}
-		.right{
-			flex: 1;
+		.down {
+			display: flex;
+			.left {
+				padding-right: 10rem / @param;
+			}
+			.right {
+				flex: 1;
+				font-size: 14px;
+				overflow: hidden;
+			}
 		}
 	}
 }
 
-.anotherName {
+.head-style {
 	color: #555;
+	font-weight: 700;
+	font-size: 16px;
 }
 </style>
