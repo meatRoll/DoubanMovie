@@ -8,6 +8,9 @@ import router from './routers/routers.js';
 import Vuex from 'vuex';
 Vue.use(Vuex);
 
+import {ToastPlugin} from 'vux';
+Vue.use(ToastPlugin);
+
 const store = new Vuex.Store({
   state: {
     isSearch: false

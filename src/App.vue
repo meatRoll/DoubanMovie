@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <drawer width="16.67rem" :show.sync="drawerVisibility" :show-mode="showModeValue" :placement="showPlacementValue" :drawer-style="{'background-color':'#35495e', width: `${250 / 15}rem`}">
+      <!-- left content -->
       <div slot="drawer" class="drawer">
         <group label-align="left" class="drawer-group">
           <group-title slot="title" class="drawer-movie-search">电影搜索</group-title>
@@ -9,7 +10,7 @@
           <x-button class="drawer-movie-search-btn" @click.native="submit" :show-loading="$store.state.isSearch">点击搜索</x-button>
         </group>
         <group class="drawer-group drawer-group-img">
-          <img :src="both" alt="">
+          <img :src="both" alt="nini&mimi">
         </group>
       </div>
 
@@ -40,7 +41,6 @@
 import { XHeader, TransferDom, Tabbar, TabbarItem, Drawer, Group, GroupTitle, XInput, XButton, XImg } from 'vux';
 import both from './assets/both.jpeg';
 
-
 export default {
   created() {
     // 设置html字体大小
@@ -51,6 +51,8 @@ export default {
     else this.showBack = true;
   },
   mounted() {
+    // 设置app大小
+    document.getElementById('app').style.height = `${document.body.offsetHeight}px`;
     this.heightData = `${document.body.offsetHeight - this.$refs.header.$el.offsetHeight - this.$refs.tabbar.$el.offsetHeight}px`;
   },
   directives: {
@@ -109,7 +111,11 @@ export default {
     // 提交
     submit() {
       if (this.movienameVal.trim() === '' && this.movietypeVal.trim() === '') {
-        console.log(1)
+        this.$vux.toast.show({
+          text: '不能为空',
+          type: 'warn',
+          position: 'middle'
+        });
       } else {
         this.$router.push({ path: '/search', query: { q: this.movienameVal, tag: this.movietypeVal } });
         this.$store.commit('changeIsSearch');
@@ -147,6 +153,7 @@ body,
 #app {
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 .router-view {
@@ -178,7 +185,7 @@ body,
   border-radius: 50%;
   overflow: hidden;
   position: absolute;
-  bottom: 20px;
+  bottom: 15px;
 }
 
 .drawer-group-img img {
