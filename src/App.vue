@@ -154,6 +154,7 @@ body,
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background-color: #f9f9f9;
 }
 
 .router-view {
