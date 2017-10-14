@@ -103,13 +103,12 @@ export default {
 			this.dataList.star = res.rating.stars / 20;
 			this.dataList.average = res.rating.average;
 			this.dataList.stars = res.rating.stars;
-			// 解决card被部分隐藏
-			setTimeout(function() {
-				document.querySelector('.movie-detail').style.paddingBottom = '1px';
-			}, 250);
 		}).catch(ex => {
 			console.error(ex);
 		});
+	},
+	updated() {
+		document.querySelector('.movie-detail').style.paddingBottom = '1px';
 	},
 	methods: {
 		// previwer方法
@@ -122,7 +121,7 @@ export default {
 		},
 		// 跳转路由
 		toRoute(id) {
-			this.$router.push({ path: `/celebrity/${id}`});
+			this.$router.push({ path: `/celebrity/${id}` });
 		}
 	},
 	data() {
@@ -228,7 +227,7 @@ export default {
 	}
 }
 
-.masker{
+.masker {
 	height: 120px;
 	border-radius: 5rem / @param;
 	margin-bottom: 5rem / @param;
@@ -256,7 +255,7 @@ export default {
 	font-weight: 700;
 }
 
-.info-source{
+.info-source {
 	background-color: #555;
 	border-radius: 5px;
 	color: #fff;

@@ -62,22 +62,19 @@ export default {
 			this.dataList = res;
 			this.dataList.aka = res.aka.join('、');
 			this.dataList.aka_en = res.aka_en.join(', ');
-			// 解决card被部分隐藏
-			setTimeout(function() {
-				document.querySelector('.movie-celebrity').style.paddingBottom = '1px';
-			}, 250);
 		}).catch(ex => {
 			console.error(ex);
 		});
 	},
 	updated() {
-		if(!this.isUpdatedWanted && this.$refs.rightBox) {
+		document.querySelector('.movie-celebrity').style.paddingBottom = '1px';
+		if (!this.isUpdatedWanted && this.$refs.rightBox) {
 			this.isUpdatedWanted = true;
 			var maskerWidth = this.$refs.masker[0].$el.offsetWidth,
-			imgWidth = this.$refs.imgBox[0].offsetWidth;
+				imgWidth = this.$refs.imgBox[0].offsetWidth;
 			console.log(maskerWidth, imgWidth)
 			this.$refs.rightBox.forEach((elem) => {
-				elem.style.width = `${(maskerWidth-imgWidth-20)/15}rem`;
+				elem.style.width = `${(maskerWidth - imgWidth - 20) / 15}rem`;
 			}, this);
 		}
 	},
