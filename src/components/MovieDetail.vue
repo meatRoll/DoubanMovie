@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<scroller lock-x :height='heightData' ref="scrollerEvent">
+		<scroller lock-x :height='heightData' ref="scrollerEvent" scrollbarY>
 			<div class="box">
 				<card class="movie-detail" v-if="!isLoadMoreShow">
 					<div slot="header">
@@ -49,6 +49,31 @@
 								<rater :value="dataList.star" disabled star="☻" class="pr"></rater>
 							</div>
 						</div>
+						<cell title="信息来源" :link="dataList.mobile_url" class="info-source"></cell>
+						<divider class="divider">导演</divider>
+						<div @click="toRoute(item.id)" v-for="item in dataList.directors" :key="item.id">
+							<masker class="masker" color="F9C90C" :opacity="0.5">
+								<div slot="content" class="img-box">
+									<img :src="item.avatars.small" alt="item.alt">
+								</div>
+								<div slot="content" class="right">
+									<p>姓名：</p>
+									<p>{{item.name}}</p>
+								</div>
+							</masker>
+						</div>
+						<divider class="divider">主演</divider>
+						<div @click="toRoute(item.id)" v-for="item in dataList.casts" :key="item.id">
+							<masker class="masker" color="09099C" :opacity="0.5">
+								<div slot="content" class="img-box">
+									<img :src="item.avatars.small" alt="item.alt">
+								</div>
+								<div slot="content" class="right">
+									<p>姓名：</p>
+									<p>{{item.name}}</p>
+								</div>
+							</masker>
+						</div>
 					</div>
 				</card>
 				<load-more tip="loading" v-if="isLoadMoreShow"></load-more>
@@ -59,12 +84,11 @@
 
 <script>
 import { jsonp } from '../assets/js/common.js';
-import { Card, Previewer, TransferDom, CellBox, Scroller, Rater, LoadMore, Flexbox, FlexboxItem, Countup } from 'vux';
+import { Card, Previewer, TransferDom, CellBox, Scroller, Rater, LoadMore, Flexbox, FlexboxItem, Countup, Masker, Divider, Cell } from 'vux';
 
 export default {
 	created() {
 		jsonp(`/subject/${this.$route.params.id}`).then(res => {
-			console.log(res);
 			this.isLoadMoreShow = false;
 			this.previewerList = [{
 				w: 300,
@@ -79,6 +103,10 @@ export default {
 			this.dataList.star = res.rating.stars / 20;
 			this.dataList.average = res.rating.average;
 			this.dataList.stars = res.rating.stars;
+			// 解决card被部分隐藏
+			setTimeout(function() {
+				document.querySelector('.movie-detail').style.paddingBottom = '1px';
+			}, 250);
 		}).catch(ex => {
 			console.error(ex);
 		});
@@ -91,6 +119,10 @@ export default {
 		// 改变描述信息的展示状态
 		changeTextState() {
 			this.isTextHide = !this.isTextHide;
+		},
+		// 跳转路由
+		toRoute(id) {
+			this.$router.push({ path: `/celebrity/${id}`});
 		}
 	},
 	data() {
@@ -125,7 +157,10 @@ export default {
 		LoadMore,
 		Flexbox,
 		FlexboxItem,
-		Countup
+		Countup,
+		Masker,
+		Divider,
+		Cell
 	},
 	directives: {
 		TransferDom
@@ -138,7 +173,7 @@ export default {
 @import '../assets/css/common.less';
 
 .movie-detail {
-	padding: 10rem /@param;
+	padding: 0 10rem /@param;
 	.content,
 	.footer {
 		margin-top: 10rem / @param;
@@ -187,9 +222,45 @@ export default {
 		color: #123456;
 		font-size: 20px;
 	}
-	.count{
+	.count {
 		font-size: 24px;
 		color: #666;
 	}
+}
+
+.masker{
+	height: 120px;
+	border-radius: 5rem / @param;
+	margin-bottom: 5rem / @param;
+	.img-box {
+		margin-right: 20rem / @param;
+		margin-left: 5rem / @param;
+		border-radius: 5px;
+		overflow: hidden;
+		img {
+			display: block;
+		}
+	}
+	.right {
+		color: #222;
+		font-weight: 700;
+		font-size: 20px;
+		p {
+			margin: 5rem / @param;
+		}
+	}
+}
+
+.divider {
+	color: #333;
+	font-weight: 700;
+}
+
+.info-source{
+	background-color: #555;
+	border-radius: 5px;
+	color: #fff;
+	font-size: 18px;
+	margin: 10rem / @param 0;
 }
 </style>

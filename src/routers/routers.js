@@ -5,6 +5,7 @@ Vue.use(Router)
 import MovieComponent from '../components/MovieComponent.vue';
 import US_box from '../components/US_box.vue';
 import MovieDetail from '../components/MovieDetail.vue';
+import MovieCelebrity from '../components/MovieCelebrity.vue';
 
 export default new Router({
   routes: [{
@@ -22,6 +23,10 @@ export default new Router({
     {
       path: '/moviedetail/:id',
       component: MovieDetail
+    },
+    {
+      path: '/celebrity/:id',
+      component: MovieCelebrity
     }
   ]
 })

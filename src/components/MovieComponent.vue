@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<scroller lock-x :height='heightData' @on-scroll-bottom="onScrollBottom" ref="scrollerEvent" :scroll-bottom-offst="200">
+		<scroller scrollbarY lock-x :height='heightData' @on-scroll-bottom="onScrollBottom" ref="scrollerEvent" :scroll-bottom-offst="200">
 			<div class="box">
 				<panel :list="dataList" type="5" @on-img-error="onImgError" class="movieList"></panel>
 				<load-more tip="loading" v-if="isLoadMoreShow"></load-more>
@@ -96,7 +96,7 @@ export default {
 			// 重置scroller
 			this.$nextTick(() => {
 				this.$refs.scrollerEvent.reset({ top: 0 })
-			})
+			});
 		}
 	},
 	props: ['heightData']

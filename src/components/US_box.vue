@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<scroller lock-x :height='heightData' ref="scrollerEvent">
+		<scroller lock-x :height='heightData' scrollbarY>
 			<div class="box">
 				<panel :header="header" :list="dataList" type="5" @on-img-error="onImgError" class="movieList"></panel>
 				<load-more tip="loading" v-if="isLoadMoreShow"></load-more>

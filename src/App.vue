@@ -76,7 +76,7 @@ export default {
       routeViewHeight: '',
       heightData: '',
       showBack: false,
-      routesArr: ['/in_theaters', '/coming_soon', '/top250', '/us_box', '/search', '/moviedetail'],
+      routesArr: ['/in_theaters', '/coming_soon', '/top250', '/us_box', '/search', '/moviedetail', '/celebrity'],
       showModeValue: 'push',
       showPlacementValue: 'left',
       both,
@@ -91,6 +91,7 @@ export default {
       if (index >= 0 && index <= 3) this.title = this.$refs[`tabbarItem${index}`].innerText;
       else if (index === 4) this.title = '电影搜索结果';
       else if (index === 5) this.title = '电影详情';
+      else if (index === 6) this.title = '影人详情';
     },
     // 根据route设置相应选中项
     setTabbarIndex() {
