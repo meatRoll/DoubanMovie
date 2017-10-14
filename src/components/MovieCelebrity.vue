@@ -1,7 +1,7 @@
 <template>
-	<div>
-		<scroller lock-x :height='heightData' scrollbarY>
-			<div class="box">
+	<div class="movie-celebrity-box">
+		<scroller lock-x :height='heightData' scrollbarY ref="scrollerEvent">
+			<div class="box" ref="box">
 				<card class="movie-celebrity" v-if="!isLoadMoreShow">
 					<div slot="header" class="header">
 						<div class="left">
@@ -62,17 +62,19 @@ export default {
 			this.dataList = res;
 			this.dataList.aka = res.aka.join('、');
 			this.dataList.aka_en = res.aka_en.join(', ');
+			// 重置scroller
+			setTimeout(() => {
+				this.$refs.scrollerEvent.reset({ top: 0 });
+			}, 250);
 		}).catch(ex => {
 			console.error(ex);
 		});
 	},
 	updated() {
-		document.querySelector('.movie-celebrity').style.paddingBottom = '1px';
 		if (!this.isUpdatedWanted && this.$refs.rightBox) {
 			this.isUpdatedWanted = true;
 			var maskerWidth = this.$refs.masker[0].$el.offsetWidth,
 				imgWidth = this.$refs.imgBox[0].offsetWidth;
-			console.log(maskerWidth, imgWidth)
 			this.$refs.rightBox.forEach((elem) => {
 				elem.style.width = `${(maskerWidth - imgWidth - 20) / 15}rem`;
 			}, this);

@@ -18,7 +18,7 @@
       <x-header :title="title" ref='header' :left-options="{showBack}">
         <x-icon slot="overwrite-left" type="ios-search-strong" size="30" class="overwrite-left" @click="showDrawer" v-if="!showBack"></x-icon>
       </x-header>
-      <router-view :heightData='heightData' @drawerVisibilityChange='changeDrawerVisibility'></router-view>
+      <router-view :heightData='heightData' @drawerVisibilityChange='changeDrawerVisibility' class="router-view-box"></router-view>
       <tabbar @on-index-change='changeText' v-model="index" ref='tabbar'>
         <tabbar-item link="/in_theaters">
           <span slot="label" ref='tabbarItem0'>正在热映</span>
@@ -158,7 +158,7 @@ body,
   background-color: #f9f9f9;
 }
 
-.router-view {
+.router-view, .router-view-box {
   overflow: hidden;
 }
 

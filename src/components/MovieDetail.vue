@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<scroller lock-x :height='heightData' ref="scrollerEvent" scrollbarY>
-			<div class="box">
+		<scroller lock-x :height='heightData' scrollbarY ref="scrollerEvent">
+			<div class="box" ref="box">
 				<card class="movie-detail" v-if="!isLoadMoreShow">
 					<div slot="header">
 						<h2>电影名：{{dataList.title}} ({{dataList.year}})</h2>
@@ -50,11 +50,11 @@
 							</div>
 						</div>
 						<cell title="信息来源" :link="dataList.mobile_url" class="info-source"></cell>
-						<divider class="divider">导演</divider>
+						<divider class="divider" v-if="dataList.directors.length!==0">导演</divider>
 						<div @click="toRoute(item.id)" v-for="item in dataList.directors" :key="item.id">
 							<masker class="masker" color="F9C90C" :opacity="0.5">
 								<div slot="content" class="img-box">
-									<img :src="item.avatars.small" alt="item.alt">
+									<img :src="item.avatars && item.avatars.small">
 								</div>
 								<div slot="content" class="right">
 									<p>姓名：</p>
@@ -62,7 +62,7 @@
 								</div>
 							</masker>
 						</div>
-						<divider class="divider">主演</divider>
+						<divider class="divider" v-if="dataList.casts.length!==0">主演</divider>
 						<div @click="toRoute(item.id)" v-for="item in dataList.casts" :key="item.id">
 							<masker class="masker" color="09099C" :opacity="0.5">
 								<div slot="content" class="img-box">
@@ -89,6 +89,10 @@ import { Card, Previewer, TransferDom, CellBox, Scroller, Rater, LoadMore, Flexb
 export default {
 	created() {
 		jsonp(`/subject/${this.$route.params.id}`).then(res => {
+			// 重置scroller
+			this.$nextTick(() => {
+				this.$refs.scrollerEvent.reset({ top: 0 })
+			});
 			this.isLoadMoreShow = false;
 			this.previewerList = [{
 				w: 300,
@@ -103,12 +107,13 @@ export default {
 			this.dataList.star = res.rating.stars / 20;
 			this.dataList.average = res.rating.average;
 			this.dataList.stars = res.rating.stars;
+			// 重置scroller
+			setTimeout(() => {
+				this.$refs.scrollerEvent.reset({ top: 0 });
+			}, 250);
 		}).catch(ex => {
 			console.error(ex);
 		});
-	},
-	updated() {
-		document.querySelector('.movie-detail').style.paddingBottom = '1px';
 	},
 	methods: {
 		// previwer方法
